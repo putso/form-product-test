@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { TableSortLabel } from "@mui/material";
+import { nanoid } from "nanoid";
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Form from "./components/Form";
+import Table from "./components/Table";
+import { getData } from "./service/getData";
+import { Data } from "./types";
+const url = "http://form/get-data.php";
 
 function App() {
+  const [data, setData] = useState<Data[]>([]);
+  const updateData = async () => {
+    const data:Data[] = await getData();
+    console.log(data);
+    setData(data);
+  };
+  useEffect(() => {
+    updateData();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form update={updateData} />
+      <Table data={data || []} updateData={updateData} />
+      <TableSortLabel />
     </div>
   );
 }
